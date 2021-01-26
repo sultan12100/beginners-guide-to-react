@@ -1,5 +1,7 @@
 <body>
-    <div id="root"></div>
+    <div id="root">
+
+    </div>
     <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
@@ -8,8 +10,17 @@
         const className = "container"
         const children = "hello world"
         const props = {className, children}
-        const element = <div id='app-root' {...props} className='not-container'/>
+        //const element = <div id='app-root' {...props} className='not-container'/>
+        // const helloElement = React.createElement('span', null, 'Hello')
+        // const worldElement = React.createElement('span', null, ' World')
+        // const element = React.createElement(React.Fragment, null,helloElement,worldElement)
+        const element = (<>
+           <span>hello</span> <span>world</span>
+            </>
+            )
+        
         console.log(element)
         ReactDOM.render(element, rootElement)
+        
     </script>
 </body>
