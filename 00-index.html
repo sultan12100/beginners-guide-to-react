@@ -1,26 +1,269 @@
 <body>
-    <div id="root">
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <!-- <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script> -->
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+  <script src="https://unpkg.com/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
+  <style>
+    /*
+    Taken from the vanilla-tilt.js demo site:
+    https://micku7zu.github.io/vanilla-tilt.js/index.html
+    */
+    .tilt-root {
+      height: 150px;
+      background-color: red;
+      width: 200px;
+      background-image: -webkit-linear-gradient(
+        315deg,
+        #ff00ba 0%,
+        #fae713 100%
+      );
+      background-image: linear-gradient(135deg, #ff00ba 0%, #fae713 100%);
+      transform-style: preserve-3d;
+      will-change: transform;
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg)
+        scale3d(1, 1, 1);
+    }
+    .tilt-child {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translateZ(30px) translateX(-50%) translateY(-50%);
+      box-shadow: 0 0 50px 0 rgba(51, 51, 51, 0.3);
+      background-color: white;
+    }
+    .totally-centered {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <script type="text/babel">
+    function Tilt({ children }) {
+      const tiltRef = React.useRef()
 
-    </div>
-    <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
-    <script type="text/babel">
+      React.useEffect(() => {
+        const tiltNode = tiltRef.current
+        const tiltNodeOptions = {
+          max: 25,
+          speed: 200,
+          glare: true,
+          'max-glare': 0.5,
+        }
+        VanillaTilt.init(tiltNode, tiltNodeOptions)
+        return () => {
+          tiltNode.vanillaTilt.destroy()
+        }
+      }, [])
+
+      return (
+        <div ref={tiltRef} className="tilt-root">
+          <div className="tilt-child">{children}</div>
+        </div>
+      )
+    }
+
+    function App() {
+      const [showTilt, setShowTilt] = React.useState(true)
+      return (
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={showTilt}
+              onChange={(e) => setShowTilt(e.target.checked)}
+            />{' '}
+            show tilt
+          </label>
+          {showTilt ? (
+            <Tilt>
+              <div className="totally-centered">vanilla-tilt.js</div>
+            </Tilt>
+          ) : null}
+        </div>
+      )
+    }
+    ReactDOM.render(<App />, document.getElementById('root'))
+  </script>
+  <!-- <script type="text/babel">
+
         const rootElement = document.getElementById('root')
-        const className = "container"
-        const children = "hello world"
-        const props = {className, children}
-        //const element = <div id='app-root' {...props} className='not-container'/>
-        // const helloElement = React.createElement('span', null, 'Hello')
-        // const worldElement = React.createElement('span', null, ' World')
-        // const element = React.createElement(React.Fragment, null,helloElement,worldElement)
-        const element = (<>
-           <span>hello</span> <span>world</span>
-            </>
+        // const className = "container"
+        // const children = "Hello World"
+        // const props = {className, children}
+        // const Message = (props) => <div className='message'>{props.children}</div>
+        // const element = <div className='container'>
+        //     <Message>{children}</Message>
+        //     <Message>Goodbye World</Message>
+        //     </div>
+        
+        function SayHello({firstName, lastName}){
+            return (
+                <div>
+                    Hello {firstName} {lastName} </div>
             )
+        }
         
-        console.log(element)
-        ReactDOM.render(element, rootElement)
+        SayHello.propTypes = {
+            
+            firstName: PropTypes.string.isRequired,
+            lastName: PropTypes.string.isRequired
+        }
         
-    </script>
+        // const element = <SayHello firstName='sultan'>
+        //     </SayHello>
+
+
+        function CharacterCount({text}) {
+            
+            return (
+                <div>
+                    the text "{text}" has {text.length? <strong>{text.length}</strong>: 'No'} characters
+                    </div>
+            )
+        }
+
+        // const element = (
+        //   <>
+        //     <CharacterCount text="Hello World" />
+        //     <CharacterCount text="" />
+        //   </>
+        // )
+
+        // function tick(){
+        //     const time = new Date().toLocaleTimeString()
+        //     const element = <div>
+        //         <input value = {time}/>
+        //         <input value = {time}/>
+        //            </div>
+        //     //rootElement.innerHTML = element
+        //     ReactDOM.render(element, rootElement)
+        // }
+        
+        // setInterval(tick,1000)
+        
+        
+            //const rootElement = document.getElementById('root')
+
+    function Box({ className = '', style, size, ...rest }) {
+      const sizeClassName = size ? `box--${size}` : className
+      return (
+        <div
+          className={`box ${className} ${sizeClassName}`}
+          style={{ fontStyle: 'italic', ...style }}
+          {...rest}
+        />
+      )
+    }
+
+    // const element = (
+    //   <div>
+    //     <Box /* size="small" */ style={{ backgroundColor: 'lightblue' }}>
+    //       small lightblue box
+    //     </Box>
+    //     <Box size="medium" style={{ backgroundColor: 'pink' }}>
+    //       small pink box
+    //     </Box>
+    //     <Box size="large" style={{ backgroundColor: 'orange' }}>
+    //       small orange box
+    //     </Box>
+    //   </div>
+    // )
+    // const state = { eventCount: 0, username: '' }
+
+    // function App() {
+    //   function handleClick() {
+    //     setState({ eventCount: state.eventCount + 1 })
+    //   }
+    //   function handleChange(event) {
+    //     console.log(event)
+    //     setState({ username: event.target.value })
+    //   }
+    //   return (
+    //     <div>
+    //       <p>There have been {state.eventCount} events.</p>
+    //       <p>
+    //         <button onClick={handleClick}>Click Me</button>
+    //       </p>
+    //       <p>You typed: {state.username}</p>
+    //       <p>
+    //         <input onChange={handleChange} />
+    //       </p>
+    //     </div>
+    //   )
+    // }
+    // function setState(newState) {
+    //   Object.assign(state, newState)
+
+    //   renderApp()
+    // }
+    // function renderApp() {
+    //   const element = <App />
+    //   console.log(element)
+    //   ReactDOM.render(element, rootElement)
+    // }
+    // renderApp()
+    // const isRequired = () => {
+    //   throw Error('Argument is required')
+    // }
+
+    // function useLocalStorageState(key = isRequired(), defaultValue = '') {
+    //   const [state, setState] = React.useState(
+    //     () => window.localStorage.getItem(key) || defaultValue
+    //   )
+
+    //   React.useEffect(() => {
+    //     window.localStorage.setItem(key, state)
+    //   }, [key, state])
+
+    //   return [state, setState]
+    // }
+    // function Greeting() {
+    //   const [name, setName] = useLocalStorageState('name')
+
+    //   const handleChange = (event) => setName(event.target.value)
+
+    //   return (
+    //     <div>
+    //       <form>
+    //         <label htmlFor="name">Name: </label>
+    //         <input value={name} onChange={handleChange} id="name" />
+    //       </form>
+    //       {name ? <strong>Hello {name}</strong> : 'Please type your name'}
+    //     </div>
+    //   )
+    // }
+    </script> -->
+
+  <!-- <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style> -->
 </body>
